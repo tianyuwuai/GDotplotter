@@ -37,8 +37,8 @@ use GD::Text::Align;
 # set parameter of figure
 my $frame_width=2000;
 my $frame_height=2000;
-my $left_curb=30;
-my $top_curb=30;
+my $left_curb=70;
+my $top_curb=70;
 my $img=GD::Image -> new($frame_width+1.5*$left_curb,$frame_height+1.5*$top_curb);
 
 
@@ -59,12 +59,15 @@ my $gray= $img->colorAllocate(100,100,100);
 my $red= $img->colorAllocate(255,0,0);
 my $green= $img->colorAllocate(0,255,0);
 my $blue= $img->colorAllocate(0,0,255);
-my $mintcream= $img->colorAllocate(245,255,250);
-my $dodgerblue= $img->colorAllocate(30,144,255);
-my $darkviolet= $img->colorAllocate(148,0,211);
-my $orange= $img->colorAllocate(255,165,0);
+my @colorarr=($img->colorAllocate(0,6,255),$img->colorAllocate(54,0,255),$img->colorAllocate(113,0,255),$img->colorAllocate(175,0,255),$img->colorAllocate(240,0,255),
+  $img->colorAllocate(255,0,205),$img->colorAllocate(255,0,144),$img->colorAllocate(255,0,90),$img->colorAllocate(255,0,36),$img->colorAllocate(255,11,0),$img->colorAllocate(255,43,0),
+  $img->colorAllocate(255,76,0),$img->colorAllocate(255,103,0),$img->colorAllocate(255,118,0),$img->colorAllocate(255,134,0),$img->colorAllocate(255,151,0),$img->colorAllocate(255,169,0),
+  $img->colorAllocate(255,187,0),$img->colorAllocate(255,206,0),$img->colorAllocate(255,224,0),$img->colorAllocate(255,243,0),$img->colorAllocate(247,255,0),$img->colorAllocate(221,255,0),
+  $img->colorAllocate(196,255,0),$img->colorAllocate(161,255,0),$img->colorAllocate(109,255,0),$img->colorAllocate(56,255,0),$img->colorAllocate(0,255,14),$img->colorAllocate(0,255,122),
+  $img->colorAllocate(0,255,229),$img->colorAllocate(0,200,255),$img->colorAllocate(0,176,255),$img->colorAllocate(0,152,255),$img->colorAllocate(0,124,255),$img->colorAllocate(0,88,255),
+  $img->colorAllocate(0,50,255));
 #font
-my $align = GD::Text::Align->new($img, valign => 'center', halign => 'center', color => $black);
+my $align = GD::Text::Align->new($img, valign => 'center', halign => 'center', color => $white);
 $align->set_font('Arial.ttf',34);
 #screen input
 my $_evalue=5e-2; #blast e-value for dotplot
@@ -259,9 +262,10 @@ for(my $i=0; $i<=$#querychrlen; $i++){
    $img -> line($posx1, $posy1, $posx2, $posy2, $black);
    $img -> line($posx1+1, $posy1, $posx2+1, $posy2, $black);
    # plot chromosome number
+   $img -> filledRectangle($posx1-$length, 18, $posx1, $top_curb*1.25-5, $colorarr[$i*int(@colorarr/@querychr)]);
    my $chr = $querychr[$i];
    $align->set_text($queryspe.$chr);
-   $align->draw($posx1-int($length/2),50,0);   
+   $align->draw($posx1-int($length/2),55,0);    
 }
 #sbjct lines and grid lines
 $accumulated_length = 0;
@@ -284,9 +288,10 @@ for(my $i=0; $i<=$#sbjctchrlen; $i++){
    $img -> line($posx1, $posy1, $posx2, $posy2, $black);
    $img -> line($posx1, $posy1+1, $posx2, $posy2+1, $black);
    #chromosome numbers
+   $img -> filledRectangle(18, $posy1-$length, $left_curb*1.25-5, $posy1, $colorarr[int(rand(@colorarr))]); 
    my $chr = $sbjctchr[$i];
    $align->set_text($sbjctspe.$chr);
-   $align->draw(50, $posy1-int($length/2), 1.57);
+   $align->draw(55, $posy1-int($length/2), 1.57);  
 }
 ###########
 ###########start draw dot
@@ -330,8 +335,7 @@ while(<DOT>){
    my $color = $gray;
    if($hitnum == 1){$color = $red;}
    elsif($hitnum == 2){$color = $blue;}
-# draw dot
-   
+# draw dot   
    $img -> filledArc($posx1, $posy1, $dot_pix, $dot_pix,0,360,$color);
 }
 close($plot_file);
